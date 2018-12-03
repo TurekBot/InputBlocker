@@ -1,16 +1,20 @@
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
 
 public class Main extends Application {
+
+    String OS = System.getProperty("os.name");
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -52,12 +56,20 @@ public class Main extends Application {
         primaryStage.initStyle(StageStyle.TRANSPARENT);
         primaryStage.setAlwaysOnTop(true);
 
-        primaryStage.setFullScreen(true);
-        primaryStage.setFullScreenExitHint("Input is being blocked. To resume, press the ESC key.");
-        primaryStage.fullScreenProperty().addListener((observable, wasFullScreen, isFullScreen) -> primaryStage.setIconified(wasFullScreen));
+        // Fullscreen is really only useful on Windows
+        if (OS.contains("Windows")) {
+            primaryStage.setFullScreen(true);
+            primaryStage.setFullScreenExitHint("Input is being blocked. To resume, press the ESC key.");
+            primaryStage.fullScreenProperty().addListener((observable, wasFullScreen, isFullScreen) -> primaryStage.setIconified(wasFullScreen));
+        }
 
-        primaryStage.setHeight(400);
-        primaryStage.setWidth(400);
+        Screen screen = Screen.getPrimary();
+        Rectangle2D bounds = screen.getVisualBounds();
+
+        primaryStage.setX(bounds.getMinX());
+        primaryStage.setY(bounds.getMinY());
+        primaryStage.setWidth(bounds.getWidth());
+        primaryStage.setHeight(bounds.getHeight());
 
     }
 
